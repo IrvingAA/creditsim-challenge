@@ -1,0 +1,13 @@
+{
+  "name": "creditsim",
+  "version": "0.1.0",
+  "description": "Credit simulation platform",
+  "private": true,
+  "scripts": {
+    "prepare": "husky install",
+    "test": "make test-compose"
+  },
+  "devDependencies": {
+    "husky": "^9.0.0"
+  }
+}

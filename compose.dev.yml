@@ -1,0 +1,73 @@
+services:
+  db:
+    image: postgres:16
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - pgdata_dev:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --save "" --appendonly no
+
+  migrate:
+    image: creditsim-api:dev
+    build:
+      context: ./creditsim-api
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./creditsim-api:/app
+    entrypoint: ["/bin/bash", "/app/scripts/dev-entrypoint.sh"]
+    command: alembic upgrade head
+
+  api:
+    image: creditsim-api:dev
+    build:
+      context: ./creditsim-api
+    env_file: .env
+    environment:
+      ENV: ${ENV}
+      LOG_LEVEL: ${LOG_LEVEL}
+      DATABASE_URL: ${DATABASE_URL}
+    ports:
+      - "${API_PORT}:8000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+    volumes:
+      - ./creditsim-api:/app
+    entrypoint: ["/bin/bash", "/app/scripts/dev-entrypoint.sh"]
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  worker:
+    image: creditsim-api:dev
+    build:
+      context: ./creditsim-api
+    env_file: .env
+    depends_on:
+      redis:
+        condition: service_started
+    volumes:
+      - ./creditsim-api:/app
+    entrypoint: ["/bin/bash", "/app/scripts/dev-entrypoint.sh"]
+    command: celery -A app.infrastructure.celery_app worker --loglevel=INFO
+
+volumes:
+  pgdata_dev:
+  front_node_modules:

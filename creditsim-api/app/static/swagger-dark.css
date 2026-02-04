@@ -1,0 +1,225 @@
+/* Dark theme overrides for Swagger UI.
+   We import the default Swagger UI CSS first to keep layout/styles intact. */
+@import url("https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css");
+
+:root {
+  color-scheme: dark;
+  --bg: #0b0f15;
+  --panel: #121826;
+  --panel-2: #0f141f;
+  --panel-3: #141c2b;
+  --border: #2f3c53;
+  --text: #e7edf5;
+  --muted: #a8b3c3;
+  --link: #8ab4ff;
+  --code-bg: #0c111b;
+  --code-text: #cfd8e3;
+}
+
+body {
+  background: var(--bg);
+}
+
+.swagger-ui {
+  color: var(--text);
+}
+
+.swagger-ui a {
+  color: var(--link);
+}
+
+.swagger-ui .topbar {
+  background: #0a0e14;
+  border-bottom: 1px solid var(--border);
+}
+
+.swagger-ui .info h1,
+.swagger-ui .info h2,
+.swagger-ui .info h3,
+.swagger-ui .info h4,
+.swagger-ui .info p,
+.swagger-ui .info li,
+.swagger-ui .info table,
+.swagger-ui .opblock-tag,
+.swagger-ui .opblock-section-header,
+.swagger-ui .parameter__name,
+.swagger-ui .parameter__type,
+.swagger-ui .parameter__deprecated,
+.swagger-ui .response-col_status,
+.swagger-ui .response-col_description {
+  color: var(--text);
+}
+
+.swagger-ui .markdown p,
+.swagger-ui .markdown li,
+.swagger-ui .markdown code,
+.swagger-ui .markdown pre {
+  color: var(--muted);
+}
+
+.swagger-ui .markdown code,
+.swagger-ui code,
+.swagger-ui pre {
+  background: var(--code-bg);
+  color: var(--code-text);
+  border: 1px solid var(--border);
+}
+
+.swagger-ui .scheme-container {
+  background: var(--panel);
+  box-shadow: none;
+  border: 1px solid var(--border);
+}
+
+.swagger-ui .opblock {
+  background: var(--panel-2);
+  border-color: var(--border);
+}
+
+.swagger-ui .opblock-summary {
+  border-bottom: 1px solid var(--border);
+}
+
+.swagger-ui .opblock-summary-path,
+.swagger-ui .opblock-summary-description {
+  color: var(--text);
+}
+
+.swagger-ui .opblock-description-wrapper,
+.swagger-ui .opblock-title_normal {
+  color: var(--text);
+}
+
+.swagger-ui .opblock .opblock-section-header {
+  background: var(--panel-3);
+  border-bottom: 1px solid var(--border);
+}
+
+.swagger-ui .opblock.opblock-get {
+  background: #0e1c2a;
+  border-color: #2d4f6b;
+}
+
+.swagger-ui .opblock.opblock-post {
+  background: #121e16;
+  border-color: #2f5637;
+}
+
+.swagger-ui .opblock.opblock-put {
+  background: #20180b;
+  border-color: #6a4c23;
+}
+
+.swagger-ui .opblock.opblock-delete {
+  background: #1d1015;
+  border-color: #6a2e38;
+}
+
+.swagger-ui .opblock-summary-method {
+  color: #0a0e14;
+}
+
+.swagger-ui .opblock.opblock-get .opblock-summary-method {
+  background: #8ab4ff;
+}
+
+.swagger-ui .opblock.opblock-post .opblock-summary-method {
+  background: #7de3a2;
+}
+
+.swagger-ui .opblock.opblock-put .opblock-summary-method {
+  background: #f3c57a;
+}
+
+.swagger-ui .opblock.opblock-delete .opblock-summary-method {
+  background: #f28f8a;
+}
+
+.swagger-ui .parameters-col_description input,
+.swagger-ui .parameters-col_description textarea,
+.swagger-ui .parameters-col_description select {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.swagger-ui input,
+.swagger-ui textarea,
+.swagger-ui select {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.swagger-ui .body-param__text,
+.swagger-ui .body-param textarea {
+  background: var(--code-bg);
+  color: var(--code-text);
+  border: 1px solid var(--border);
+}
+
+.swagger-ui .opblock-body {
+  background: var(--panel-2);
+}
+
+.swagger-ui input::placeholder,
+.swagger-ui textarea::placeholder {
+  color: #9aa6b6;
+}
+
+.swagger-ui .btn {
+  background: #1a2432;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.swagger-ui .btn:hover {
+  background: #223044;
+}
+
+.swagger-ui .responses-table td,
+.swagger-ui .responses-table th {
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.swagger-ui .response-controls,
+.swagger-ui .response-header,
+.swagger-ui .response-col_links {
+  color: var(--muted);
+}
+
+.swagger-ui .model-box-control:focus,
+.swagger-ui .model-box-control:hover {
+  color: var(--text);
+}
+
+.swagger-ui .model,
+.swagger-ui .model-title,
+.swagger-ui .model-toggle:after {
+  color: var(--text);
+}
+
+.swagger-ui .parameters-col_description input:focus,
+.swagger-ui .parameters-col_description textarea:focus,
+.swagger-ui .parameters-col_description select:focus,
+.swagger-ui .btn:focus {
+  outline: none;
+  border-color: #5a7bb0;
+  box-shadow: 0 0 0 2px rgba(90, 123, 176, 0.25);
+}
+
+.swagger-ui table thead tr th,
+.swagger-ui table tbody tr td {
+  border-color: var(--border);
+}
+
+.swagger-ui .opblock-summary-control:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(90, 123, 176, 0.2);
+  border-radius: 4px;
+}
+
+.swagger-ui .response-col_status .response-undocumented {
+  color: #d1a3ff;
+}

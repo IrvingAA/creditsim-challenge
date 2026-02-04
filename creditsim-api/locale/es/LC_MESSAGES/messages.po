@@ -1,0 +1,68 @@
+# Spanish translations for creditsim-api
+# Copyright (C) 2026
+# This file is distributed under the same license as the creditsim-api project.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: creditsim-api 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-03 19:00+0000\n"
+"PO-Revision-Date: 2026-02-03 19:00+0000\n"
+"Last-Translator: \n"
+"Language: es\n"
+"Language-Team: es <>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Manual 1.0\n"
+
+# Exception messages
+msgid "db_error_detail"
+msgstr "Base de datos no disponible"
+
+msgid "simulation_not_found"
+msgstr "Simulación no encontrada"
+
+msgid "invalid_input"
+msgstr "Entrada inválida"
+
+msgid "validation_error"
+msgstr "Error de validación"
+
+# Benchmark messages
+msgid "benchmark_pong"
+msgstr "pong"
+
+msgid "benchmark_fast"
+msgstr "Rápido"
+
+msgid "benchmark_slow"
+msgstr "Lento"
+
+msgid "benchmark_audit_not_blocked"
+msgstr "La auditoría no bloqueó la respuesta"
+
+msgid "benchmark_too_slow"
+msgstr "Demasiado lento"
+
+msgid "benchmark_audit_blocked"
+msgstr "La auditoría bloqueó la respuesta"
+
+msgid "benchmark_fast_by_chance"
+msgstr "Rápido por casualidad"
+
+msgid "insight_redis_improvement"
+msgstr "El caché Redis mejora el rendimiento en {percent}%"
+
+msgid "insight_full_improvement"
+msgstr "Full stack es {percent}% más rápido que minimal"
+
+msgid "insight_meets_requirement"
+msgstr "Full stack cumple el requisito de <100ms"
+
+msgid "insight_redis_unavailable"
+msgstr "Caché Redis no disponible (cache_redis_url no configurado)"
+
+msgid "insight_celery_unavailable"
+msgstr "Celery no disponible (celery_broker_url no configurado)"

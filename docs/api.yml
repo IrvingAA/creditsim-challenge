@@ -1,0 +1,263 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: Challenge
+meta:
+  id: wrk_146440627ad94f26bdd2cee93466d42e
+  created: 1770107530097
+  modified: 1770107549544
+  description: ""
+collection:
+  - name: Simulations
+    meta:
+      id: fld_de95d6b491cb469e9db44d2b0f048984
+      created: 1770107565742
+      modified: 1770107565742
+      sortKey: -1770107565742
+      description: ""
+    children:
+      - url: "{{ _.base_local_url }}/simulate"
+        name: Store
+        meta:
+          id: req_db92c52a87e445f39ba655e7385b101a
+          created: 1770107530189
+          modified: 1770160729698
+          isPrivate: false
+          description: ""
+          sortKey: -1770107572215
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "name": "{% faker 'randomFirstName' %}",
+              "last_name": "{% faker 'randomLastName' %}",
+              "document_id": "ABC123456",
+              "principal": "1200000",
+              "annual_rate": 0.12,
+              "term_months": 12
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_local_url }}/simulations"
+        name: Index
+        meta:
+          id: req_c300cf03c6e14b1fb803f2182b98b880
+          created: 1770111454630
+          modified: 1770113334328
+          isPrivate: false
+          description: ""
+          sortKey: -1770107572315
+        method: GET
+        parameters:
+          - name: limit
+            value: "100"
+            description: "1-100  (1-100, default: 20) - Resultados por página"
+            disabled: false
+          - name: offset
+            value: "0"
+            description: "(≥0, default: 0) - Paginación"
+            disabled: false
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_local_url
+          }}/simulations/b5b36f04-5d4e-43ef-aac1-9725049b0236/verify"
+        name: Verify
+        meta:
+          id: req_6cf28cd355a3409b84812eca673facea
+          created: 1770113180046
+          modified: 1770113652442
+          isPrivate: false
+          description: ""
+          sortKey: -1769908500701
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "folio": "COT-Z3FEPJC"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Health
+    meta:
+      id: fld_70318dc913ee42a5bbd245d76966ec4e
+      created: 1770110135403
+      modified: 1770184045489
+      sortKey: -1770110135403
+      description: ""
+    children:
+      - url: "{{ _.base_local_url }}/benchmark/async-audit"
+        name: Async Audit
+        meta:
+          id: req_3b40a09eddc24b0897d8704098f28a3f
+          created: 1770110138855
+          modified: 1770110948130
+          isPrivate: false
+          description: ""
+          sortKey: -1770110138855
+        method: POST
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_local_url }}/benchmark/domain-only"
+        name: Domain only
+        meta:
+          id: req_bff3a5439ab04bba9a4a93b1980378ad
+          created: 1770110181520
+          modified: 1770110893111
+          isPrivate: false
+          description: ""
+          sortKey: -1770110138905
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_local_url }}/benchmark/summary"
+        name: Summary
+        meta:
+          id: req_8d6e6a66d2b8466e97dee7773c2c42d1
+          created: 1770110783406
+          modified: 1770110796593
+          isPrivate: false
+          description: ""
+          sortKey: -1770110138955
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_local_url }}/benchmark/sync-audit-wrong "
+        name: Async Audit Wrong
+        meta:
+          id: req_1324ff5fdaa94b4e87e8a1eb09829b3c
+          created: 1770110983140
+          modified: 1770151650083
+          isPrivate: false
+          description: ""
+          sortKey: -1770108855535
+        method: POST
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+          - name: Accept-Language
+            value: es
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_local_url }}/benchmark/compare"
+        name: Compare
+        meta:
+          id: req_7a2eb65dd1c64825bbff7b6729c25c87
+          created: 1770147268767
+          modified: 1770160927334
+          isPrivate: false
+          description: ""
+          sortKey: -1770108213925
+        method: POST
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+          - name: Accept-Language
+            value: es
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_db12f9c9c0c8d4d04aab36fe7276851ff52b6d3f
+    created: 1770107530103
+    modified: 1770107530103
+environments:
+  name: Base Environment
+  meta:
+    id: env_db12f9c9c0c8d4d04aab36fe7276851ff52b6d3f
+    created: 1770107530100
+    modified: 1770107624851
+    isPrivate: false
+  data:
+    base_local_url: http://localhost:8105

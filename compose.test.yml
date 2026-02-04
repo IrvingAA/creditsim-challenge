@@ -1,0 +1,42 @@
+services:
+  db_test:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: creditsim
+      POSTGRES_INITDB_ARGS: "--auth-local=md5 --auth-host=md5"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d creditsim"]
+      interval: 2s
+      timeout: 2s
+      retries: 20
+
+  api_test:
+    build:
+      context: ./creditsim-api
+    user: root
+    environment:
+      ENV: test
+      LOG_LEVEL: WARNING
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@db_test:5432/creditsim
+      RISK_AUDIT_ENABLED: "false"
+      CACHE_ENABLED: "false"
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+
+    volumes:
+      - ./creditsim-api:/app
+      - ./creditsim-api/test-results:/app/test-results
+
+    depends_on:
+      db_test:
+        condition: service_healthy
+
+    command: >
+      sh -c "pip install -e .[dev] &&
+              alembic upgrade head &&
+              python -m pytest --junitxml=/app/test-results/results.xml --cov=app --cov-report=xml:/app/test-results/coverage.xml --cov-report=term-missing"

@@ -1,0 +1,148 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  REGISTRY: ghcr.io
+  REPO_OWNER: ${{ github.repository_owner }}
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run tests with docker-compose
+        run: |
+          cp .env.example .env
+          make test-compose
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: creditsim-api/test-results/
+          retention-days: 7
+
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      image_api: ${{ steps.lowercase.outputs.image_api }}
+      image_front: ${{ steps.lowercase.outputs.image_front }}
+    steps:
+      - name: Convert to lowercase
+        id: lowercase
+        run: |
+          REPO_LOWER=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')
+          echo "image_api=${{ env.REGISTRY }}/${REPO_LOWER}-api" >> $GITHUB_OUTPUT
+          echo "image_front=${{ env.REGISTRY }}/${REPO_LOWER}-front" >> $GITHUB_OUTPUT
+
+  build-and-push:
+    needs: [setup, test]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    outputs:
+      service_tag: ${{ steps.meta.outputs.service_tag }}
+      git_sha: ${{ steps.meta.outputs.git_sha }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate metadata
+        id: meta
+        run: |
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          GIT_SHA_SHORT=$(echo "${{ github.sha }}" | cut -c1-7)
+          TIMESTAMP=$(date +%Y%m%d%H%M%S)
+          SERVICE_TAG="${BRANCH_NAME}-${GIT_SHA_SHORT}-${TIMESTAMP}"
+          
+          echo "service_tag=${SERVICE_TAG}" >> $GITHUB_OUTPUT
+          echo "git_sha=${GIT_SHA_SHORT}" >> $GITHUB_OUTPUT
+          echo "branch=${BRANCH_NAME}" >> $GITHUB_OUTPUT
+          
+          echo "::notice::Building with tag: ${SERVICE_TAG}"
+
+      - name: Build and push API image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./creditsim-api
+          file: ./creditsim-api/Dockerfile
+          push: true
+          tags: |
+            ${{ needs.setup.outputs.image_api }}:${{ steps.meta.outputs.service_tag }}
+            ${{ needs.setup.outputs.image_api }}:${{ steps.meta.outputs.branch }}-latest
+          cache-from: |
+            type=registry,ref=${{ needs.setup.outputs.image_api }}:${{ steps.meta.outputs.branch }}-latest
+            type=registry,ref=${{ needs.setup.outputs.image_api }}:buildcache
+          cache-to: type=registry,ref=${{ needs.setup.outputs.image_api }}:buildcache,mode=max
+
+      - name: Build and push Frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./creditsim-front
+          file: ./creditsim-front/Dockerfile
+          target: runner
+          build-args: |
+            VITE_API_URL=/api
+          push: true
+          tags: |
+            ${{ needs.setup.outputs.image_front }}:${{ steps.meta.outputs.service_tag }}
+            ${{ needs.setup.outputs.image_front }}:${{ steps.meta.outputs.branch }}-latest
+          cache-from: |
+            type=registry,ref=${{ needs.setup.outputs.image_front }}:${{ steps.meta.outputs.branch }}-latest
+            type=registry,ref=${{ needs.setup.outputs.image_front }}:buildcache
+          cache-to: type=registry,ref=${{ needs.setup.outputs.image_front }}:buildcache,mode=max
+
+      - name: Create deployment artifact
+        run: |
+          mkdir -p deployment-info
+          cat > deployment-info/deploy-info.env << EOF
+          SERVICE_TAG=${{ steps.meta.outputs.service_tag }}
+          GIT_SHA=${{ steps.meta.outputs.git_sha }}
+          BRANCH=${{ steps.meta.outputs.branch }}
+          COMMIT_MESSAGE=$(git log -1 --pretty=%B | head -1)
+          AUTHOR=${{ github.actor }}
+          TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          EOF
+
+      - name: Upload deployment info
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-info-${{ steps.meta.outputs.service_tag }}
+          path: deployment-info/
+          retention-days: 30
+
+      - name: Deployment instructions
+        run: |
+          echo "::notice::✅ Images built and pushed successfully!"
+          echo "::notice::📦 Service Tag: ${{ steps.meta.outputs.service_tag }}"
+          echo "::notice::🔖 Git SHA: ${{ steps.meta.outputs.git_sha }}"
+          echo ""
+          echo "::notice::To deploy, run locally:"
+          echo "::notice::export SERVICE_TAG=\"${{ steps.meta.outputs.service_tag }}\""
+          echo "::notice::export GIT_SHA=\"${{ steps.meta.outputs.git_sha }}\""
+          echo "::notice::./scripts/deploy-from-local.sh"

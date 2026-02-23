@@ -24,7 +24,6 @@ test-compose:
 	docker compose --env-file $(ENV_FILE) -f compose.test.yml up --build --abort-on-container-exit --exit-code-from api_test --remove-orphans
 	docker compose -f compose.test.yml down -v
 
-# Convenience aliases for common Make targets
 .PHONY: up down logs ps
 up:
 	$(MAKE) dev-up
